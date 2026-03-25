@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # QR-Based Indoor Navigation System
 
 A complete, fully-working QR code-based indoor navigation system for college campuses.
@@ -135,3 +136,6 @@ NODE_ENV=development
 ## 📝 License
 
 ISC
+=======
+# qr-navigation
+>>>>>>> e557c15b6d8545be542b57c809a38ef237b6900a
