@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus QR Codes</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding: 40px;
+        }
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        .info {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #64748b;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .qr-container {
+            margin: 20px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        .location-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .location-id {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-family: monospace;
+            background-color: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            .grid {
+                gap: 20px;
+            }
+            .card {
+                box-shadow: none;
+                border: 2px dashed #cbd5e1;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            h1, .info {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Campus Navigation QR Codes</h1>
+    <div class="info">
+        <p>Print these QR codes and place them around the campus. Scan them with the app to set your starting location.</p>
+        <button onclick="window.print()" style="padding: 10px 20px; background: #0ea5e9; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px;">Print QR Codes</button>
+    </div>
+
+    <div class="grid" id="qr-grid"></div>
+
+    <script>
+        // Data derived from navigationGraph.js
+        const locations = [
+            { id: "Entry_Top", name: "Entry Top" },
+            { id: "Admin_Office", name: "Admin Office" },
+            { id: "Placement_Cell", name: "Placement Cell" },
+            { id: "Central_Library", name: "Central Library" },
+            { id: "Seminar_Hall", name: "Seminar Hall" },
+            { id: "Open_Audi", name: "Open Audi" },
+            { id: "Ubuntu_Lab", name: "Ubuntu Lab" },
+            { id: "Conference_Hall", name: "Conference Hall" },
+            { id: "Stairs_Left", name: "Stairs (Left)" },
+            { id: "CR101", name: "CR 101" },
+            { id: "CR102", name: "CR 102" },
+            { id: "Stairs_Right", name: "Stairs (Right)" },
+            { id: "CR103", name: "CR 103" },
+            { id: "CR104", name: "CR 104" },
+            { id: "CR105", name: "CR 105" },
+            { id: "Staff_Room", name: "Staff Rooms" },
+            { id: "Bosch_Lab", name: "Bosch Lab" },
+            { id: "Lab_10", name: "Lab 10" },
+            { id: "Lab_1", name: "Lab 1" },
+            { id: "Lift", name: "Lifts" }
+        ];
+
+        const grid = document.getElementById('qr-grid');
+
+        locations.forEach(loc => {
+            // Create card element
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            // Add Location Name
+            const nameEl = document.createElement('div');
+            nameEl.className = 'location-name';
+            nameEl.textContent = loc.name;
+            card.appendChild(nameEl);
+
+            // Add QR Container
+            const qrContainer = document.createElement('div');
+            qrContainer.className = 'qr-container';
+            card.appendChild(qrContainer);
+
+            // Add Location ID
+            const idEl = document.createElement('div');
+            idEl.className = 'location-id';
+            idEl.textContent = `ID: ${loc.id}`;
+            card.appendChild(idEl);
+
+            grid.appendChild(card);
+
+            // Generate QR Code inside the container
+            // The value is exactly the 'id' which QrScannerScreen.js expects
+            new QRCode(qrContainer, {
+                text: loc.id,
+                width: 150,
+                height: 150,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.M
+            });
+        });
+    </script>
+</body>
+</html>

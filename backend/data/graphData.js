@@ -1,76 +1,75 @@
 /**
  * Floor-wise graph data for navigation
- * Ground floor layout with corridor structure
- * 
- * Layout: GATE NUMBER 1 → CR-101 (5m) → CR-102 (5m)
- *         From CR-102: Right side → LAB 1, Left side → LIFT
+ * Rectilinear representation
  */
 
 export const graphData = {
   groundFloor: {
-    name: "Ground Floor",
+    name: "Campus Mapping",
     nodes: {
-      "GATE NUMBER 1": { 
-        x: 50, 
-        y: 250, 
-        type: "gate", 
-        name: "Gate Number 1",
-        description: "Main entrance gate"
-      },
-      "CR-101": { 
-        x: 150, 
-        y: 250, 
-        type: "classroom", 
-        name: "Classroom 101",
-        description: "Classroom 101"
-      },
-      "CR-102": { 
-        x: 250, 
-        y: 250, 
-        type: "classroom", 
-        name: "Classroom 102",
-        description: "Classroom 102"
-      },
-      "LAB 1": { 
-        x: 350, 
-        y: 250, 
-        type: "lab", 
-        name: "Lab 1",
-        description: "Laboratory 1 (right side)"
-      },
-      "LIFT": { 
-        x: 250, 
-        y: 350, 
-        type: "lift", 
-        name: "Lift",
-        description: "Elevator (left side)"
-      }
+      "Entry_Top": { x: 200, y: -200, type: "gate", name: "Entry Top" },
+      "Admin_Office": { x: 0, y: -200, type: "office", name: "Admin Office" },
+      "Placement_Cell": { x: 400, y: -200, type: "office", name: "Placement Cell" },
+      
+      "Central_Library": { x: 200, y: -100, type: "library", name: "Central Library" },
+      "Seminar_Hall": { x: 400, y: -100, type: "hall", name: "Seminar Hall" },
+      
+      "Open_Audi": { x: 200, y: 0, type: "hall", name: "Open Audi" },
+      "Ubuntu_Lab": { x: 0, y: 0, type: "lab", name: "Ubuntu Lab" },
+      "Conference_Hall": { x: 400, y: 0, type: "hall", name: "Conference Hall" },
+
+      "Stairs_Left": { x: 0, y: 100, type: "stairs", name: "Stairs (Left)" },
+      "CR101": { x: 100, y: 100, type: "classroom", name: "CR 101" },
+      "CR102": { x: 200, y: 100, type: "classroom", name: "CR 102" },
+      "Stairs_Right": { x: 400, y: 100, type: "stairs", name: "Stairs (Right)" },
+
+      "CR103": { x: 0, y: 200, type: "classroom", name: "CR 103" },
+      "CR104": { x: 100, y: 200, type: "classroom", name: "CR 104" },
+      "CR105": { x: 200, y: 200, type: "classroom", name: "CR 105" },
+      "Staff_Room": { x: 400, y: 200, type: "office", name: "Staff Rooms" },
+
+      "Bosch_Lab": { x: 0, y: 300, type: "lab", name: "Bosch Lab" },
+      "Lab_10": { x: 200, y: 300, type: "lab", name: "Lab 10" },
+
+      "Lab_1": { x: 200, y: 400, type: "lab", name: "Lab 1" },
+      "Lift": { x: 400, y: 400, type: "lift", name: "Lifts" }
     },
     edges: {
-      "GATE NUMBER 1": { "CR-101": 5 },
-      "CR-101": { "GATE NUMBER 1": 5, "CR-102": 5 },
-      "CR-102": { "CR-101": 5, "LAB 1": 10, "LIFT": 8 },
-      "LAB 1": { "CR-102": 10 },
-      "LIFT": { "CR-102": 8 }
+      "Admin_Office": { "Entry_Top": 200 },
+      "Entry_Top": { "Admin_Office": 200, "Placement_Cell": 200, "Central_Library": 100 },
+      "Placement_Cell": { "Entry_Top": 200, "Seminar_Hall": 100 },
+      
+      "Central_Library": { "Entry_Top": 100, "Open_Audi": 100 },
+      "Seminar_Hall": { "Placement_Cell": 100, "Conference_Hall": 100 },
+
+      "Ubuntu_Lab": { "Open_Audi": 200, "Stairs_Left": 100 },
+      "Open_Audi": { "Ubuntu_Lab": 200, "Conference_Hall": 200, "Central_Library": 100, "CR102": 100 },
+      "Conference_Hall": { "Open_Audi": 200, "Seminar_Hall": 100, "Stairs_Right": 100 },
+
+      "Stairs_Left": { "Ubuntu_Lab": 100, "CR101": 100, "CR103": 100 },
+      "CR101": { "Stairs_Left": 100, "CR102": 100, "CR104": 100 },
+      "CR102": { "CR101": 100, "Stairs_Right": 200, "Open_Audi": 100, "CR105": 100 },
+      "Stairs_Right": { "CR102": 200, "Conference_Hall": 100, "Staff_Room": 100 },
+
+      "CR103": { "Stairs_Left": 100, "CR104": 100, "Bosch_Lab": 100 },
+      "CR104": { "CR103": 100, "CR105": 100, "CR101": 100 },
+      "CR105": { "CR104": 100, "Staff_Room": 200, "CR102": 100, "Lab_10": 100 },
+      "Staff_Room": { "CR105": 200, "Stairs_Right": 100, "Lift": 200 },
+
+      "Bosch_Lab": { "CR103": 100, "Lab_10": 200 },
+      "Lab_10": { "Bosch_Lab": 200, "CR105": 100, "Lab_1": 100 },
+
+      "Lab_1": { "Lab_10": 100, "Lift": 200 },
+      "Lift": { "Lab_1": 200, "Staff_Room": 200 }
     }
   }
 };
 
-/**
- * Get graph for a specific floor
- * @param {string} floor - Floor identifier (groundFloor, floor2, floor3)
- * @returns {Object} Graph edges
- */
 export function getFloorGraph(floor = "groundFloor") {
   const floorData = graphData[floor];
   return floorData ? floorData.edges : graphData.groundFloor.edges;
 }
 
-/**
- * Get all locations for a specific floor
- * @param {string} floor - Floor identifier
- * @returns {Array} List of location names
- */
 export function getFloorLocations(floor = "groundFloor") {
   const floorData = graphData[floor];
   if (!floorData) return [];
@@ -82,10 +81,6 @@ export function getFloorLocations(floor = "groundFloor") {
   }));
 }
 
-/**
- * Get all available floors
- * @returns {Array} List of floors with metadata
- */
 export function getAllFloors() {
   return Object.entries(graphData).map(([key, data]) => ({
     id: key,
@@ -94,24 +89,12 @@ export function getAllFloors() {
   }));
 }
 
-/**
- * Validate if a location exists on a floor
- * @param {string} floor - Floor identifier
- * @param {string} location - Location identifier
- * @returns {boolean}
- */
 export function locationExists(floor, location) {
   const floorData = graphData[floor];
   if (!floorData) return false;
   return location in floorData.nodes;
 }
 
-/**
- * Get coordinates for a location
- * @param {string} floor - Floor identifier
- * @param {string} location - Location identifier
- * @returns {Object} Coordinates {x, y}
- */
 export function getLocationCoordinates(floor, location) {
   const floorData = graphData[floor];
   if (!floorData || !floorData.nodes[location]) return null;
@@ -121,11 +104,6 @@ export function getLocationCoordinates(floor, location) {
   };
 }
 
-/**
- * Get all node coordinates for a floor
- * @param {string} floor - Floor identifier
- * @returns {Object} Map of location IDs to coordinates
- */
 export function getFloorCoordinates(floor = "groundFloor") {
   const floorData = graphData[floor];
   if (!floorData) return {};
@@ -136,12 +114,6 @@ export function getFloorCoordinates(floor = "groundFloor") {
   return coordinates;
 }
 
-/**
- * Get node information
- * @param {string} floor - Floor identifier
- * @param {string} location - Location identifier
- * @returns {Object} Complete node information
- */
 export function getNodeInfo(floor, location) {
   const floorData = graphData[floor];
   if (!floorData || !floorData.nodes[location]) return null;
